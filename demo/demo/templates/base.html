@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>{% block title %} Bienvenidos {% endblock %}</title>
+	<link rel="stylesheet" type="text/css" href="/media/bootstrap/css/bootstrap.min.css">
+	
+	<link rel="stylesheet" type="text/css" href="/media/bootstrap/css/bootstrap.css">
+	
+	<script src="/media/js/jquery.js"></script>
+	<script src="/media/js/jquery.form.min.js"></script>
+	<script src="/media/js/demo.js"></script>
+	<script src="/media/bootstrap/js/bootstrap.js"></script>
+	<style type="text/css">
+		body{
+			padding-top: 4%;
+			padding-bottom: 4%;
+		}
+		.sidebar-nav{
+			padding: 4%;
+		}
+
+		.alert{
+			text-align: center;
+			font-size:18px;
+			font-weight: bold;
+		}
+	</style>
+	<script type="text/javascript">
+		$(document).on('ready',function(){
+			$.ajax({
+				type:"GET",
+				contentType:"application/json; charset=utf-8",
+				dateType:"json",
+				url:"/ws/productos/",
+				
+				success:function(response){
+					var cantidad = response.length; //cantidad agregada y i define la cantidad de objetos 
+					
+					//alert(cantidad);
+				var i = (response.length-1); // ANTEPENULTIMO ELEMENTO DE LA LISTA
+				if(i < 0){
+					$('#ProductoNuevos').append("<li>0</li>"); // CONCATENA EL PRODUCTO
+					
+				}else if(i==0){
+					var i = (response.length-cantidad);
+						for(i;i<=(response.length-1);i++){ // ULTIMO ELEMENTO
+							$('#ProductoNuevos').append("<li>"+response[i].fields.nombre+"</li>"); // CONCATENA EL PRODUCTO
+						}
+					}
+					else if(i>0){
+						var i = (response.length-cantidad);
+						if (response.length > 10){
+							var i = (response.length-1)-i;
+						for(i;i<=(response.length-1);i++){ // ULTIMO ELEMENTO
+							$('#ProductoNuevos').append("<li>"+response[i].fields.nombre+"</li>"); // CONCATENA EL PRODUCTO
+						};
+					}else{
+                    	 	for(i;i<=(response.length-1);i++){ // ULTIMO ELEMENTO
+								$('#ProductoNuevos').append("<li>"+response[i].fields.nombre+"</li>"); // CONCATENA EL PRODUCTO
+						}
+					};
+
+				}
+			}
+		});
+});
+</script>
+<!--<script src="/media/js/jquery.form.min.js"></script>-->
+</head>
+<body>
+	<div id="wrap">
+		<div class="navbar navbar-inverse navbar-fixed-top">
+			<div class="navbar-inner">
+				<a class="brand" href="{% url "vista_pricipal" %}">Proyecto Ventas</a>
+				{% if user.is_authenticated %}
+				<p class="navbar-text pull-right">
+					Usuario {{user.username}}
+				</p>
+				{% endif %}
+				<ul class="nav">
+					<li><a href="{% url "vista_pricipal" %}">Inicio</a></li>
+					<li><a href="/productos/page/1/">Productos</a></li>
+					<li><a href="{% url "vista_contactos" %}">Contacto</a></li>
+					<li><a href="{% url "vista_about" %}">Acerca de...</a></li>
+					{% if user.is_authenticated %}
+					<li><a href="{% url "vista_logout" %}">Cerrar Sesion</a></li>
+					{% else %}
+					<li><a href="{% url "vista_login" %}">Login</a></li>
+					{% endif %}				
+				</ul>
+			</div><!--/inner-->
+		</div><!--/navbar-->
+		<div class="container-fluid">
+			<div class="row-fluid">
+				<div class="span9">
+					<div class="hero-unit">
+						{% block content %}
+						{% endblock%}
+					</div>
+				</div><!--/span-->
+				<div class="span3">
+					<div class="well sidebar-nav">
+						<ul class="nav nav-list">
+							<li class="nav-header">Mi perfil</li>
+							<p align="justify">
+								{%if user.is_authenticated %}
+								<p style="text-align:center">Bienvenid@ <b>{{ user }}</b></p>
+								<center>
+									<img src="{{get_image_profile}}" width="100px" heigth="100px"/>
+								</center>
+								{% else %}
+								<a href="/login/" class="btn btn-success btn-lg btn-block">Inicia Sesión<a>
+									{% endif %}
+								</p>
+							</ul>
+						</div><!--/.well -->
+						<div class="well sidebar-nav">
+							<ul class="nav nav-list">
+								<li class="nav-header">Mi Carrito</li>
+								<br><p align="justify">
+								Carrito de Super
+							</p>
+						</ul>
+					</div><!--/.well -->
+					<div class="well sidebar-nav">
+						<ul class="nav nav-list" id="ProductoNuevos">
+							<li class="nav-header">Nuevos Productos</li>
+
+						</ul>
+					</div><!--/.well -->
+					<img src="/media/images/django.gif"/>
+				</div><!--/span-->
+			</div><!--/row-->
+
+		</div>
+	</body>
+	</html>

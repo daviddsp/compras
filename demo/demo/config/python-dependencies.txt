@@ -1,0 +1,4 @@
+python2.7-psycopg2 python3-psycopg2 python2.6-psycopg2
+psycopg2
+pip
+python-pyinotify

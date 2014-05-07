@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% block title %} Lista de Productos {% endblock %}
+{% block content %}
+
+<!--IniciaModal-->
+ <div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-header">
+    <h3 id="myModalLabel">Eliminar Producto</h3>
+    </div>
+    <div class="modal-body">
+    <p>¿Realmente desea eliminar el producto <span id="modal_name"></span>?</p>
+    </div>
+    <div class="modal-footer">
+        <form method="post" id="frmEliminar">
+            {% csrf_token %}
+            <input type="hidden" id="modal_idProducto" name="product_id">
+            <button class="btn" data-dismiss="modal" aria-hidden="true">Cerrar</button>
+            <button type="submit" class="btn btn-danger">Eliminar</button>
+        </form>
+    </div>
+</div>
+<!--EndModal-->
+
+<h1>Catalogo de Productos</h1><br>
+{% if user.is_authenticated %}
+<a href="{% url "vista_agregar_productos" %}" class="btn btn-primary">Agregar nuevo</a><br>
+{% endif %}
+
+{% if productos %} <!--Existen productos-->
+    <table class="table table-bordered" id="tabla_productos">
+        <thead>
+            <tr>
+                <th>Producto</th>
+                <th>Precio</th>
+                <th>Cantidad Existente</th>
+            </tr>
+        </thead>
+    {% for p in productos %}
+        <tbody>
+            <tr id="tr{{p.id}}">
+                <td>{{p.nombre}}</td>
+                <td>Bs.F {{p.precio}}</td>
+                <td>{{p.stock}}</td>
+                <td><a class="btn" href="/producto/{{p.id}}"><li class="icon-search"></li>Ver</a></td>
+                <td><a class="btn" href="#"><li class="icon-shopping-cart"></li>Comprar</a></td>
+                {% if user.is_authenticated and user.is_staff %}
+                <td><a class="btn" href="/edit/producto/{{p.id}}"><li class="icon-pencil"></li>Editar</a></td>
+                <td><a href="#myModal" role="button" class="btn btn-danger delete" data-toggle="modal" id="{{p.id}}" data-name="{{p.nombre}}"><i class="icon-trash icon-white"></i>Eliminar</a></td>
+                    
+                {% endif %}
+            </tr>       
+        </tbody>
+    {% endfor %}
+    </table>
+{% else %}
+        <h2>No existen productos activos a la venta.!</h2>
+{% endif %}
+{% if productos %}
+    <div class="pagination pagination-large">
+        <ul>
+        <li><a href="/productos/page/1"> << </a></li>
+    {% comment %} <p>PAGINADOR PREVIOUS</p> {% endcomment %}
+    {% if productos.has_previous %}
+        <li><a href="/productos/page/{{productos.previous_page_number }}"> Atras</a></li>
+    {% else %}
+        <li><a href="#">Atras</a></li>
+    {% endif %}
+    {% comment %} <p>PAGINADOR SIGUIENTE</p> {% endcomment %}     
+    {% if productos.has_next %}
+        <li><a href="/productos/page/{{productos.next_page_number }}"> Siguiente</a></li>
+    {% else %}
+        <a href="#"> Siguiente </a>
+        {% endif %}
+            <li><a href="/productos/page/{{productos.paginator.num_pages }}"> >> </a></li>
+            <span class="label"><h4>Página {{ productos.number }} de {{ productos.paginator.num_pages }}</h4></span>
+        {% endif %}
+        </ul>
+    </div>
+{% endblock %}

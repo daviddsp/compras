@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title  %} Agregar Productos {% endblock %}
+{% block content %}
+{% if info %}
+		<p>Gracias por agregar un nuevo producto.</p>
+		<br>
+		<p>La información recibida fue la siguiente </p>
+		<p>Nombre del producto: <h5>{{nombre}}</h5></p>
+		<p>Descripción del producto: {{descripcion}}</p>
+	{% else %}
+	<form action="." method="POST" enctype="multipart/form-data"><!--CON EL enctype especificamos que se envie archivos  multimedia-->
+		{% if informacion == 'Ingrese sus productos' %}
+			<div class="alert alert-info">
+				{{ informacion }}
+			</div>
+			{% elif informacion == 'Se guardo sastisfactoriamente..!' %}
+				<div class="alert alert-success">
+					{{ informacion }}
+				</div>
+			{% else %}
+				<div class="alert alert-error">
+					{{ informacion }}
+				</div>
+		{% endif %}
+		<!--<span class="label"><h3>Agrege productos</h3></span>-->
+		{% csrf_token %}
+		{{ form.as_p }}
+		<button class="btn btn-primary" type="submit">Guardar</button>
+		<button class="btn btn-success" type="submit">Limpiar</button>
+		<a href="/productos/page/1" class="btn btn-inverse">Regresar a la lista de productos</a>
+	</form>
+
+{% endif %}
+{% endblock %}
+</body>
+</html>
