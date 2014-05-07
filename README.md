@@ -1,4 +1,4 @@
 ==========================
-Carrito de compras Djando
+Carrito de compras Django
 ==========================
 
