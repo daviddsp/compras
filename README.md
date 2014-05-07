@@ -3,9 +3,8 @@ Carrito de compras Django
 ==========================
 
 ======================
-Librerias necesarias
+*Librerias necesarias*
 ======================
-psycopg2
-
-simplejson
+-**psycopg2**
+-**simplejson**
 
